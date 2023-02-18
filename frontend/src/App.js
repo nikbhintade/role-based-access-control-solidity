@@ -16,15 +16,14 @@ function App() {
 		const { ethereum } = window;
 		if (ethereum) {
 			const provider = new ethers.providers.Web3Provider(ethereum);
-			console.log(provider)
 			const accounts = await provider.send("eth_requestAccounts", []);
 			const account = accounts[0];
-			console.log(account);
 			const signer = provider.getSigner();
 			const contract = new ethers.Contract(ADDRESS, data.abi, signer);
 			setContract(contract);
 		} else {
-			console.log("Install any Celo wallet");
+			console.error("Install any Celo wallet");
+			toast.error("No wallet installed!")
 		}
 	};
 
@@ -70,7 +69,6 @@ function App() {
 	const createEntry = async (e) => {
 		e.preventDefault();
 		try {
-			console.log(ethers.utils.formatBytes32String(e.target[0].value));
 			let txn = await contract.createEntry(ethers.utils.formatBytes32String(e.target[0].value));
 			await toast.promise(
 				txn.wait(),
