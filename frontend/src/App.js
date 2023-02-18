@@ -29,10 +29,6 @@ function App() {
 	};
 
 	const role = async (type, address) => {
-		if (!contract) {
-			console.error("error");
-			return toast.error("Wallet not connected!")
-		};
 		let txn, message;
 		try {
 			switch (type) {
@@ -71,15 +67,34 @@ function App() {
 		);
 	}
 
+	const createEntry = async (e) => {
+		e.preventDefault();
+		try {
+			console.log(ethers.utils.formatBytes32String(e.target[0].value));
+			let txn = await contract.createEntry(ethers.utils.formatBytes32String(e.target[0].value));
+			await toast.promise(
+				txn.wait(),
+				{
+					pending: "transaction executing",
+					success: "Entry Created!"
+				}
+			);
+		} catch (error) {
+			console.error(error);
+			toast.error(error.reason);
+		}
+	}
+
 	return (
 		<div className="App">
 			<div className="no-input">
 				<h2>Role Based Access Control</h2>
-				<button onClick={() => connect()}>Connect</button>
+				<button onClick={connect}>Connect</button>
 			</div>
 			<hr class="solid"></hr>
 			<div className="row">
-				<h2>Grant Role</h2>
+				<h2>Grant Creator Role (Admin Use Only)</h2>
+				<p className="explained">"grantCreatorRole" is function used by role admin to grant role of any user</p>
 				<form onSubmit={e => {
 					e.preventDefault();
 					role(0, e.target[0].value)
@@ -89,7 +104,8 @@ function App() {
 				</form>
 			</div>
 			<div className="row">
-				<h2>Revoke Role</h2>
+				<h2>Revoke Creator Role (Admin Use Only)</h2>
+				<p className="explained">"revokeCreatorRole" is function used by role admin to revoke role of any user</p>
 				<form onSubmit={e => {
 					e.preventDefault();
 					role(1, e.target[0].value)
@@ -99,7 +115,7 @@ function App() {
 				</form>
 			</div>
 			<div className="no-input">
-				<h2>Renounce Role</h2>
+				<h2>Renounce Creator Role</h2>
 				<form onSubmit={e => {
 					e.preventDefault();
 					role(2)
@@ -107,10 +123,11 @@ function App() {
 					<button type="submit" disabled={!contract}>Renounce Role</button>
 				</form>
 			</div>
+			<p className="explained">"renounceCreatorRole" function is used by user who holds the creator role to renounce their role</p>
 			<hr class="solid"></hr>
 			<div className="row">
 				<h2>Create Entry</h2>
-				<form>
+				<form onSubmit={createEntry}>
 					<input placeholder="Data Type: String" />
 					<button type="submit" disabled={!contract}>Create Entry</button>
 				</form>
