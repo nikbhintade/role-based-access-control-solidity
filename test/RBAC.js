@@ -47,14 +47,16 @@ describe("Lock", function () {
 		it("Should allow creator role to create entry", async function () {
 			const { rbac, creator } = await loadFixture(deployFixture);
 			await rbac.grantCreatorRole(creator.address);
+			expect(await rbac.count()).to.be.equal(0);
 
 			const data = ethers.utils.formatBytes32String("FIRST ENTRY");
 			await rbac.connect(creator).createEntry(data);
 
 			expect(await rbac.entries(0)).to.be.equal(data);
+			expect(await rbac.count()).to.be.equal(1);
 		})
 
-		it("Should revert accessed with correct role", async function () {
+		it("Should revert for caller without correct role", async function () {
 			const { rbac, creator, extra } = await loadFixture(deployFixture);
 			await rbac.grantCreatorRole(creator.address);
 

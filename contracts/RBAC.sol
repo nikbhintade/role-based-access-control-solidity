@@ -9,7 +9,7 @@ contract RBAC is AccessControl {
 
     bytes32 public constant CREATOR = keccak256("CREATOR");
 
-    Counters.Counter count;
+    Counters.Counter public count;
     mapping(uint256 => bytes32) public entries;
 
     constructor() {
