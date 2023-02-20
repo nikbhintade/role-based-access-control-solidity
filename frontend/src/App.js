@@ -1,25 +1,33 @@
 import { useState } from "react";
 import { ethers } from "ethers";
+
+// handles notifications
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
-import data from "./contract/RBAC.json";
+import data from "./RBAC.json";
 
-const ADDRESS = "0x0973b6417225Bc4b73B88912Ce64e7BCF1AB6244"
+// This is dummy address. 
+// We need to change it after we delpoy our contract on Alfajores.
+const CONTRACTADDRESS = "0x0973b6417225Bc4b73B88912Ce64e7BCF1AB6244"
 
 function App() {
 
+	// store contract instance and truncated wallet address
 	const [contract, setContract] = useState(undefined);
+	const [address, setAddress] = useState("");
 
+	// connect to wallet
 	const connect = async () => {
 		const { ethereum } = window;
 		if (ethereum) {
 			const provider = new ethers.providers.Web3Provider(ethereum);
 			const accounts = await provider.send("eth_requestAccounts", []);
 			const account = accounts[0];
+			setAddress(`${account.slice(0, 5)}...${account.slice(-5)}`)
 			const signer = provider.getSigner();
-			const contract = new ethers.Contract(ADDRESS, data.abi, signer);
+			const contract = new ethers.Contract(CONTRACTADDRESS, data.abi, signer);
 			setContract(contract);
 		} else {
 			console.error("Install any Celo wallet");
@@ -27,7 +35,10 @@ function App() {
 		}
 	};
 
-	const role = async (type, address) => {
+	// interact with role-related contract function 
+	const role = async (e, type) => {
+		e.preventDefault();
+		let address = e.target[0].value;
 		let txn, message;
 		try {
 			switch (type) {
@@ -66,8 +77,10 @@ function App() {
 		);
 	}
 
+	// create entry in contract
 	const createEntry = async (e) => {
 		e.preventDefault();
+		console.log(e);
 		try {
 			let txn = await contract.createEntry(ethers.utils.formatBytes32String(e.target[0].value));
 			await toast.promise(
@@ -87,16 +100,13 @@ function App() {
 		<div className="App">
 			<div className="no-input">
 				<h2>Role Based Access Control</h2>
-				<button onClick={connect}>Connect</button>
+				<button onClick={connect}>{contract ? address: "Connect"}</button>
 			</div>
 			<hr class="solid"></hr>
 			<div className="row">
 				<h2>Grant Creator Role (Admin Use Only)</h2>
 				<p className="explained">"grantCreatorRole" is function used by role admin to grant role of any user</p>
-				<form onSubmit={e => {
-					e.preventDefault();
-					role(0, e.target[0].value)
-				}}>
+				<form onSubmit={e => role(e, 0)}>
 					<input placeholder="Data Type: Address" />
 					<button type="submit" disabled={!contract}>Grant Role</button>
 				</form>
@@ -104,20 +114,14 @@ function App() {
 			<div className="row">
 				<h2>Revoke Creator Role (Admin Use Only)</h2>
 				<p className="explained">"revokeCreatorRole" is function used by role admin to revoke role of any user</p>
-				<form onSubmit={e => {
-					e.preventDefault();
-					role(1, e.target[0].value)
-				}}>
+				<form onSubmit={e => role(e, 1)}>
 					<input placeholder="Data Type: Address" />
 					<button type="submit" disabled={!contract}>Revoke Role</button>
 				</form>
 			</div>
 			<div className="no-input">
 				<h2>Renounce Creator Role</h2>
-				<form onSubmit={e => {
-					e.preventDefault();
-					role(2)
-				}}>
+				<form onSubmit={e => role(e, 2)}>
 					<button type="submit" disabled={!contract}>Renounce Role</button>
 				</form>
 			</div>

@@ -4,7 +4,7 @@ const {
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Lock", function () {
+describe("RBAC", function () {
 	async function deployFixture() {
 		const [owner, creator, extra] = await ethers.getSigners();
 
@@ -21,6 +21,7 @@ describe("Lock", function () {
 			expect(
 				await rbac.hasRole(DEFAULT_ADMIN_ROLE, owner.address)
 			).to.true;
+			expect(await rbac.count()).to.be.equal(0);
 		});
 	});
 
@@ -42,6 +43,60 @@ describe("Lock", function () {
 			expect(
 				await rbac.hasRole(CREATOR, creator.address)
 			).to.be.true;
+		})
+
+		it("Should revoke the role", async function () {
+			const { rbac, owner, creator } = await loadFixture(deployFixture);
+			await rbac.grantCreatorRole(creator.address);
+			const CREATOR = await rbac.CREATOR();
+
+			expect(
+				await rbac.revokeCreatorRole(creator.address)
+			).to.emit(
+				rbac,
+				"RoleRevoked"
+			).withArgs(
+				CREATOR,
+				creator.address,
+				owner.address
+			)
+			expect(
+				await rbac.hasRole(CREATOR, creator.address)
+			).to.be.false;
+		})
+
+		it("Should revert if non-role admin calls to grant or revoke role", async function () {
+			const { rbac, owner, creator } = await loadFixture(deployFixture);
+			await expect(
+				rbac.connect(creator).grantCreatorRole(owner.address)
+			).to.be.revertedWith(
+				new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
+			)
+			await expect(
+				rbac.connect(creator).revokeCreatorRole(owner.address)
+			).to.be.revertedWith(
+				new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
+			)
+		})
+
+		it("Should creator should be able to renounce role", async function () {
+			const { rbac, owner, creator } = await loadFixture(deployFixture);
+			await rbac.grantCreatorRole(creator.address);
+			const CREATOR = await rbac.CREATOR();
+
+			expect(
+				await rbac.connect(creator).renounceCreatorRole()
+			).to.emit(
+				rbac,
+				"RoleRevoked"
+			).withArgs(
+				CREATOR,
+				creator.address,
+				owner.address
+			)
+			expect(
+				await rbac.hasRole(CREATOR, creator.address)
+			).to.be.false;
 		})
 
 		it("Should allow creator role to create entry", async function () {
@@ -66,34 +121,6 @@ describe("Lock", function () {
 			).to.be.revertedWith(
 				new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
 			)
-		})
-
-		it("Should revoke the role", async function() {
-			const { rbac, owner, creator } = await loadFixture(deployFixture);
-			await rbac.grantCreatorRole(creator.address);
-			const CREATOR = await rbac.CREATOR();
-
-			expect(
-				await rbac.revokeCreatorRole(creator.address)
-			).to.emit(
-				rbac,
-				"RoleRevoked"
-			).withArgs(
-				CREATOR,
-				creator.address,
-				owner.address
-			)
-		})
-
-		it("Should creator should be able to renounce role", async function() {
-			const { rbac, owner, creator } = await loadFixture(deployFixture);
-			await rbac.grantCreatorRole(creator.address);
-			const CREATOR = await rbac.CREATOR();
-			await rbac.connect(creator).renounceCreatorRole();
-			expect(
-				await rbac.hasRole(CREATOR, creator.address)
-			).to.be.false;
-			
 		})
 	})
 });
