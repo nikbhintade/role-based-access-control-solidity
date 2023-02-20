@@ -134,7 +134,7 @@ mapping(uint256 => bytes32) public entries;
 In the constructor, we set up the **`DEFAULT_ADMIN_ROLE`** using the **`_setupRole`** function:
 
 ```solidity
-	constructor() {
+    constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 ```
@@ -156,7 +156,7 @@ We will create three functions related to roles:
 The **`grantCreatorRole`** function takes an address as an argument and uses the **`grantRole`** function from **`AccessControl`** to assign the **`CREATOR`** role to the address:
 
 ```solidity
-	function grantCreatorRole(address _address) public {
+    function grantCreatorRole(address _address) public {
         grantRole(CREATOR, _address);
     }
 ```
@@ -168,7 +168,7 @@ The **`grantRole`** function checks whether the caller is a role admin or the de
 The **`revokeCreatorRole`** function works in the same way as the **`grantCreatorRole`** function, with the exception that it uses the **`revokeRole`** function from **`AccessControl`**. This function revokes the **`CREATOR`** role from the address provided as its argument.
 
 ```solidity
-	function revokeCreatorRole(address _address) public {
+    function revokeCreatorRole(address _address) public {
         revokeRole(CREATOR, _address);
     }
 ```
@@ -182,7 +182,7 @@ The **`renounceCreatorRole`**
  function allows the caller to revoke their own role for any reason, such as if the user no longer wants that role or if the user suspects that their wallet has been compromised. This function uses the **`renounceRole`** function from **`AccessControl`**, which internally uses the **`_revokeRole`** function to revoke the role. However, this function also checks that the caller's address is the same as the address of the role being revoked.
 
 ```solidity
-	function renounceCreatorRole() public {
+    function renounceCreatorRole() public {
         renounceRole(CREATOR, msg.sender);
     }
 ```
@@ -196,7 +196,7 @@ We are going to write the **`createEntry`** function, which will be restricted t
 For each entry, we can get the key by calling the **`current`** function on **`count`**, and the value will be the argument passed to the function. At the end, we will increment the **`count`** using the **`increment`** function.
 
 ```solidity
-	function createEntry(bytes32 data) public onlyRole(CREATOR) {
+    function createEntry(bytes32 data) public onlyRole(CREATOR) {
         entries[count.current()] = data;
         count.increment();
     }
