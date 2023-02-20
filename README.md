@@ -1,4 +1,4 @@
-# Understanding Role Based Access Control in Smart Contracts
+**# Understanding Role Based Access Control in Smart Contracts
 
 
 ## Introduction
@@ -35,9 +35,9 @@ To begin, create a directory for this tutorial and open it in a code editor like
 npx hardhat .
 ```
 
-After the project setup is complete, remove all the files from the `contracts` and `test` directories. Create two new files, `RBAC.sol` and `RBAC.js`, in the `contracts` and `test` directories, respectively. We also need to create a`.env` file to hold the private key of the wallet that will be used for the deployment of the contract.
+After the project setup is complete, remove all the files from the **`contracts`** and **`test`** directories. Create two new files, **`RBAC.sol`** and **`RBAC.js`**, in the **`contracts`** and **`test`** directories, respectively. We also need to create a **`.env`** file to hold the private key of the wallet that will be used for the deployment of the contract.
 
-We need to install the `dotenv` and `@openzeppelin/contracts` which helps us to read the `.env` file and create role based access control respectively. To install that package, run the following command in the terminal:
+We need to install the **`dotenv`** and **`@openzeppelin/contracts`** which helps us to read the **`.env`** file and create role based access control respectively. To install that package, run the following command in the terminal:
 
 ```bash
 yarn add dotenv @openzeppelin/contracts
@@ -53,10 +53,10 @@ npx create-react-app frontend
 
 We also need to install a few packages for our web app. These packages are as follows:
 
-- `ethers`: To interact with smart contracts and wallets
-- `react-toastify`: To show notifications on the web app
+- **`ethers`**: To interact with smart contracts and wallets
+- **`react-toastify`**: To show notifications on the web app
 
-To install those packages, go to the `frontend` directory and run the following command:
+To install those packages, go to the **`frontend`** directory and run the following command:
 
 ```bash
 # Change directory to `frontend`
@@ -77,8 +77,7 @@ The role admin has the ability to grant and revoke roles. The default administra
 
 ## RBAC Smart Contract
 
-To create a role-based access control (RBAC) smart contract, we start by opening the **`RBAC.sol`**
- file and pasting the following code snippet that defines the smart contract outline and necessary imports:
+To create a role-based access control (RBAC) smart contract, we start by opening the **`RBAC.sol`** file and pasting the following code snippet that defines the smart contract outline and necessary imports:
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -173,13 +172,11 @@ The **`revokeCreatorRole`** function works in the same way as the **`grantCreato
     }
 ```
 
-After revoking the role, the function emits a **`RoleGranted`**
- event.
+After revoking the role, the function emits a **`RoleGranted`** event.
 
 ### Renounce Role
 
-The **`renounceCreatorRole`**
- function allows the caller to revoke their own role for any reason, such as if the user no longer wants that role or if the user suspects that their wallet has been compromised. This function uses the **`renounceRole`** function from **`AccessControl`**, which internally uses the **`_revokeRole`** function to revoke the role. However, this function also checks that the caller's address is the same as the address of the role being revoked.
+The **`renounceCreatorRole`** function allows the caller to revoke their own role for any reason, such as if the user no longer wants that role or if the user suspects that their wallet has been compromised. This function uses the **`renounceRole`** function from **`AccessControl`**, which internally uses the **`_revokeRole`** function to revoke the role. However, this function also checks that the caller's address is the same as the address of the role being revoked.
 
 ```solidity
     function renounceCreatorRole() public {
@@ -518,85 +515,85 @@ Within the **`App`** component, we use the **`useState`** hook to store the inst
 
 The rest of the web app consists of a simple HTML structure with forms that allow the user to input data, as well as instructions to help the user understand the various elements of the web app.
 
-Let’s move on to writing out first function, `connect`. In this function, we are handling wallet interaction with out web app and creating a `contract` instance that we will use to interact with our contract on chain.
+Let’s move on to writing out first function, **`connect`**. In this function, we are handling wallet interaction with out web app and creating a **`contract`** instance that we will use to interact with our contract on chain.
 
-The `connect` function starts by checking if the user's browser has an Ethereum provider such as MetaMask enabled. If it does, the function creates a new `Web3Provider` instance using the `ethereum` object and requests the user's accounts. It then takes first account from `account` array and truncates to store it in the state using `setAddress`.
+The **`connect`** function starts by checking if the user's browser has an Ethereum provider such as MetaMask enabled. If it does, the function creates a new **`Web3Provider`** instance using the **`ethereum`** object and requests the user's accounts. It then takes first account from **`account`** array and truncates to store it in the state using **`setAddress`**.
 
-Next, the function creates an instance of `ethers.Contract` using the contract's address, ABI, and signer (the provider's signer). Finally, it sets the contract instance in the `setContract` variable for later use.
+Next, the function creates an instance of **`ethers.Contract`** using the contract's address, ABI, and signer (the provider's signer). Finally, it sets the contract instance in the **`setContract`** variable for later use.
 
-If no Ethereum provider is found, notification is pushed using `toast` saying **`No wallet installed!`.**
+If no Ethereum provider is found, notification is pushed using **`toast`** saying **`No wallet installed!`.**
 
 ```jsx
-// connect to wallet
-		const connect = async () => {
-				const { ethereum } = window;
-				if (ethereum) {
-					const provider = new ethers.providers.Web3Provider(ethereum);
-					const accounts = await provider.send("eth_requestAccounts", []);
-					const account = accounts[0];
-					setAddress(`${account.slice(0, 5)}...${account.slice(-5)}`)
-					const signer = provider.getSigner();
-					const contract = new ethers.Contract(CONTRACTADDRESS, data.abi, signer);
-					setContract(contract);
-				} else {
-					console.error("Install any Celo wallet");
-					toast.error("No wallet installed!")
-				}
-		};
+    // connect to wallet
+    const connect = async () => {
+        const { ethereum } = window;
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const accounts = await provider.send("eth_requestAccounts", []);
+            const account = accounts[0];
+            setAddress(`${account.slice(0, 5)}...${account.slice(-5)}`)
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(CONTRACTADDRESS, data.abi, signer);
+            setContract(contract);
+        } else {
+            console.error("Install any Celo wallet");
+            toast.error("No wallet installed!")
+        }
+    };
 ```
 
-Let's write `role` function, it takes in two arguments: `e` and `type`.
+Let's write **`role`** function, it takes in two arguments: **`e`** and **`type`**.
 
-The first thing the function does is prevent page refresh using `e.preventDefault()`. Then, it retrieves the address passed by the user from the first form field in the user interface form using `e.target[0].value`.
+The first thing the function does is prevent page refresh using **`e.preventDefault()`**. Then, it retrieves the address passed by the user from the first form field in the user interface form using **`e.target[0].value`**.
 
-Next, the function uses a switch statement to determine which role-related contract function to execute based on the value of the type argument. The options for `type` are `0`, `1`, or `2`, and correspond to the functions `grantCreatorRole`, `revokeCreatorRole`, and `renounceCreatorRole` respectively.
+Next, the function uses a switch statement to determine which role-related contract function to execute based on the value of the type argument. The options for **`type`** are **`0`**, **`1`**, or **`2`**, and correspond to the functions **`grantCreatorRole`**, **`revokeCreatorRole`**, and **`renounceCreatorRole`** respectively.
 
-If an error occurs while executing the contract function, it is logged to the console and an error message is displayed using `toast.error()`.
+If an error occurs while executing the contract function, it is logged to the console and an error message is displayed using **`toast.error()`**.
 
-Finally, the function waits for the transaction to be executed using `txn.wait()`, and displays a toast notification to the user indicating the status of the transaction. The toast notification displays the message "transaction executing" while the transaction is being processed, and displays the message "role granted", "role revoked", or "role renounced" based on the type of transaction that was executed.
+Finally, the function waits for the transaction to be executed using **`txn.wait()`**, and displays a toast notification to the user indicating the status of the transaction. The toast notification displays the message "transaction executing" while the transaction is being processed, and displays the message "role granted", "role revoked", or "role renounced" based on the type of transaction that was executed.
 
 ```jsx
 // interact with role-related contract function 
-		const role = async (e, type) => {
-				e.preventDefault();
-				let address = e.target[0].value;
-				let txn, message;
-				try {
-					switch (type) {
-						case 0:
-		
-							txn = await contract.grantCreatorRole(address);
-							message = "role granted"
-		
-							break;
-						case 1:
-		
-							txn = await contract.revokeCreatorRole(address);
-							message = "role revoked";
-		
-							break;
-						case 2:
-		
-							txn = await contract.renounceCreatorRole();
-							message = "role renounced";
-		
-							break;
-						default:
-							break;
-					}
-				} catch (error) {
-					console.error(error);
-					toast.error(error.reason);
-				}
-		
-				await toast.promise(
-					txn.wait(),
-					{
-						pending: "transaction executing",
-						success: message
-					}
-				);
-		}
+    const role = async (e, type) => {
+        e.preventDefault();
+        let address = e.target[0].value;
+        let txn, message;
+        try {
+            switch (type) {
+            case 0:
+
+                txn = await contract.grantCreatorRole(address);
+                message = "role granted"
+
+                break;
+            case 1:
+
+                txn = await contract.revokeCreatorRole(address);
+                message = "role revoked";
+
+                break;
+            case 2:
+
+                txn = await contract.renounceCreatorRole();
+                message = "role renounced";
+
+                break;
+            default:
+                break;
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.reason);
+        }
+
+        await toast.promise(
+            txn.wait(),
+            {
+                pending: "transaction executing",
+                success: message
+            }
+        );
+    }
 ```
 
 The **`createEntry`** function is responsible for creating a new entry in the contract. It takes the event **`e`** as an argument, which presumably contains data needed to create the entry. In this case, it looks for the input value from the target element of the event and converts it into bytes using **`ethers.utils.formatBytes32String()`**. It then calls the **`createEntry()`** function from the **`contract`** object and passes in the formatted data as its argument.
@@ -607,76 +604,75 @@ Once the transaction is successful, **`toast.promise()`** is used to display a n
 
 ```jsx
 // create entry in contract
-		const createEntry = async (e) => {
-				e.preventDefault();
-				console.log(e);
-				try {
-					let txn = await contract.createEntry(ethers.utils.formatBytes32String(e.target[0].value));
-					await toast.promise(
-						txn.wait(),
-						{
-							pending: "transaction executing",
-							success: "Entry Created!"
-						}
-					);
-				} catch (error) {
-					console.error(error);
-					toast.error(error.reason);
-				}
-		}
+    const createEntry = async (e) => {
+        e.preventDefault();
+        console.log(e);
+        try {
+            let txn = await contract.createEntry(ethers.utils.formatBytes32String(e.target[0].value));
+            await toast.promise(
+                txn.wait(),
+                {
+                    pending: "transaction executing",
+                    success: "Entry Created!"
+                }
+            );
+        } catch (error) {
+            console.error(error);
+            toast.error(error.reason);
+        }
+    }
 ```
 
 We have completed implementing the desired functionality for our web app, so now it's time to style it. To apply styles to the web app, simply copy and paste the following CSS code into the **`App.css`** file.
 
 ```css
 .App {
-  padding: 0% 10%;
+    padding: 0% 10%;
 }
 
 .no-input {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 hr.solid {
-  border-top: 1px solid #bbb;
-  margin: 10px 0px;
+    border-top: 1px solid #bbb;
+    margin: 10px 0px;
 }
 
 .row {
-  display: flex;
-  flex-direction: column;
-
+    display: flex;
+    flex-direction: column;
 }
 
 form {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 input {
-  height: 30px;
-  width: 60%;
-  margin-right: 20px;
-  font-size: 16px;
-  transition: 0.6s;
-  border: none;
-  border-bottom: 1px solid #CCC;
-  background-color: transparent;
+    height: 30px;
+    width: 60%;
+    margin-right: 20px;
+    font-size: 16px;
+    transition: 0.6s;
+    border: none;
+    border-bottom: 1px solid #CCC;
+    background-color: transparent;
 }
 
 button {
-  width: 200px;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
+    width: 200px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
 }
 .explained {
-  color: #CCC;
+    color: #CCC;
 }
 ```
 
@@ -684,7 +680,7 @@ The next step is to deploy the contract.
 
 ## Contract Deployment
 
-To deploy contract, we need a wallet with some test Celo token and add private key of that wallet to `.env` file.
+To deploy contract, we need a wallet with some test Celo token and add private key of that wallet to **`.env`** file.
 
 ```
 PRIVATE_KEY = "YOUR_PRIVATE_KEY"
@@ -692,7 +688,7 @@ PRIVATE_KEY = "YOUR_PRIVATE_KEY"
 
 You can get test token from [Alfajores Faucet](https://faucet.celo.org/). 
 
-We need to modify our `hardhat.config.js` file. Modification that needs to be done are adding Alfajores testnet configuration and importing `dotenv` package so that private key can be read from `.env` file. 
+We need to modify our **`hardhat.config.js`** file. Modification that needs to be done are adding Alfajores testnet configuration and importing **`dotenv`** package so that private key can be read from **`.env`** file. 
 
 ```jsx
 require("@nomicfoundation/hardhat-toolbox");
@@ -700,28 +696,28 @@ require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-	  solidity: "0.8.17",
-	  defaultNetwork: "hardhat",
-	  networks: {
-		    hardhat: {
-		    },
-		    alfajores: {
-		      url: "https://alfajores-forno.celo-testnet.org",
-		      accounts: [process.env.PRIVATE_KEY],
-		      chainId: 44787,
-		    },
-		    celo: {
-		      url: "https://forno.celo.org",
-		      accounts: [process.env.PRIVATE_KEY],
-		      chainId: 42220,
-		    },
-	  },
+    solidity: "0.8.17",
+    defaultNetwork: "hardhat",
+    networks: {
+        hardhat: {
+        },
+        alfajores: {
+            url: "https://alfajores-forno.celo-testnet.org",
+            accounts: [process.env.PRIVATE_KEY],
+            chainId: 44787,
+        },
+        celo: {
+            url: "https://forno.celo.org",
+            accounts: [process.env.PRIVATE_KEY],
+            chainId: 42220,
+        },
+    },
 };
 ```
 
 Final thing to do for deployment is to create a deployment script. 
 
-Open `deploy.js` file from `scripts` and remove all the code from it. Script will start with importing **`hardhat`** library and defines an async function **`main`**. The **`main`** function uses the **`getContractFactory`** method to retrieve a factory object for the **`RBAC`** contract. It then calls the **`deploy`** method on the factory object to deploy the contract to the blockchain. The **`deployed`** method is called to wait for the contract to be deployed, and the contract's address is logged to the console. The **`main`** function is called and any errors are caught and logged to the console.
+Open **`deploy.js`** file from **`scripts`** and remove all the code from it. Script will start with importing **`hardhat`** library and defines an async function **`main`**. The **`main`** function uses the **`getContractFactory`** method to retrieve a factory object for the **`RBAC`** contract. It then calls the **`deploy`** method on the factory object to deploy the contract to the blockchain. The **`deployed`** method is called to wait for the contract to be deployed, and the contract's address is logged to the console. The **`main`** function is called and any errors are caught and logged to the console.
 
 ```jsx
 const hre = require('hardhat');
@@ -752,7 +748,7 @@ You should see the following output in the terminal:
 
 ![Deployment](./images/deployment.png)
 
-You can copy the address printed on the terminal and add it to `CONTRACTADDRESS` variable in the `App.js`.
+You can copy the address printed on the terminal and add it to **`CONTRACTADDRESS`** variable in the **`App.js`**.
 
 ### Running Web App
 
@@ -802,3 +798,4 @@ When he's not crafting compelling product stories and technical documents, you c
 - [Access Control](https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl) by OpenZeppelin
 - [Hardhat](https://hardhat.org/)
 - [React Toastify](https://www.npmjs.com/package/react-toastify)
+**
