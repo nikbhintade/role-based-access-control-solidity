@@ -419,78 +419,78 @@ const CONTRACTADDRESS = "0x0973b6417225Bc4b73B88912Ce64e7BCF1AB6244"
 
 function App() {
 
-	// store contract instance and truncated wallet address
-	const [contract, setContract] = useState(undefined);
-	const [address, setAddress] = useState("");
+    // store contract instance and truncated wallet address
+    const [contract, setContract] = useState(undefined);
+    const [address, setAddress] = useState("");
 
-	// connect to wallet
-	const connect = async () => {
+    // connect to wallet
+    const connect = async () => {
 
-	};
+    };
 
-	// interact with role-related contract function 
-	const role = async (e, type) => {
+    // interact with role-related contract function 
+    const role = async (e, type) => {
 
-	}
+    }
 
-	// create entry in contract
-	const createEntry = async (e) => {
+    // create entry in contract
+    const createEntry = async (e) => {
 
-	}
+    }
 
-	return (
-		<div className="App">
-			<div className="no-input">
-				<h2>Role Based Access Control</h2>
-				<button onClick={connect}>{contract ? address: "Connect"}</button>
-			</div>
-			<hr class="solid"></hr>
-			<div className="row">
-				<h2>Grant Creator Role (Admin Use Only)</h2>
-				<p className="explained">"grantCreatorRole" is function used by role admin to grant role of any user</p>
-				<form onSubmit={e => role(e, 0)}>
-					<input placeholder="Data Type: Address" />
-					<button type="submit" disabled={!contract}>Grant Role</button>
-				</form>
-			</div>
-			<div className="row">
-				<h2>Revoke Creator Role (Admin Use Only)</h2>
-				<p className="explained">"revokeCreatorRole" is function used by role admin to revoke role of any user</p>
-				<form onSubmit={e => role(e, 1)}>
-					<input placeholder="Data Type: Address" />
-					<button type="submit" disabled={!contract}>Revoke Role</button>
-				</form>
-			</div>
-			<div className="no-input">
-				<h2>Renounce Creator Role</h2>
-				<form onSubmit={e => role(e, 2)}>
-					<button type="submit" disabled={!contract}>Renounce Role</button>
-				</form>
-			</div>
-			<p className="explained">"renounceCreatorRole" function is used by user who holds the creator role to renounce their role</p>
-			<hr class="solid"></hr>
-			<div className="row">
-				<h2>Create Entry</h2>
-				<form onSubmit={createEntry}>
-					<input placeholder="Data Type: String" />
-					<button type="submit" disabled={!contract}>Create Entry</button>
-				</form>
-			</div>
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeButton={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="light"
-			/>
-		</div>
-	);
+    return (
+        <div className="App">
+	    <div className="no-input">
+		<h2>Role Based Access Control</h2>
+		<button onClick={connect}>{contract ? address: "Connect"}</button>
+	    </div>
+	    <hr class="solid"></hr>
+	    <div className="row">
+		<h2>Grant Creator Role (Admin Use Only)</h2>
+		<p className="explained">"grantCreatorRole" is function used by role admin to grant role of any user</p>
+		<form onSubmit={e => role(e, 0)}>
+		    <input placeholder="Data Type: Address" />
+		    <button type="submit" disabled={!contract}>Grant Role</button>
+		</form>
+	    </div>
+	    <div className="row">
+		<h2>Revoke Creator Role (Admin Use Only)</h2>
+		<p className="explained">"revokeCreatorRole" is function used by role admin to revoke role of any user</p>
+		<form onSubmit={e => role(e, 1)}>
+		    <input placeholder="Data Type: Address" />
+		    <button type="submit" disabled={!contract}>Revoke Role</button>
+		</form>
+	    </div>
+	    <div className="no-input">
+		<h2>Renounce Creator Role</h2>
+		<form onSubmit={e => role(e, 2)}>
+		    <button type="submit" disabled={!contract}>Renounce Role</button>
+		</form>
+	    </div>
+		<p className="explained">"renounceCreatorRole" function is used by user who holds the creator role to renounce their role</p>
+		<hr class="solid"></hr>
+	    <div className="row">
+		<h2>Create Entry</h2>
+		<form onSubmit={createEntry}>
+		    <input placeholder="Data Type: String" />
+		    <button type="submit" disabled={!contract}>Create Entry</button>
+		</form>
+	    </div>
+	    <ToastContainer
+		position="top-right"
+		autoClose={5000}
+		hideProgressBar={false}
+		newestOnTop={false}
+		closeButton={false}
+		closeOnClick
+		rtl={false}
+		pauseOnFocusLoss
+		draggable
+		pauseOnHover
+		theme="light"
+	    />
+	</div>
+    );
 }
 
 export default App;
