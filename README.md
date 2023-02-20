@@ -1,4 +1,4 @@
-**# Understanding Role Based Access Control in Smart Contracts
+# Understanding Role Based Access Control in Smart Contracts
 
 
 ## Introduction
