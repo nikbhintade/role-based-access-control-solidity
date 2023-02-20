@@ -798,4 +798,3 @@ When he's not crafting compelling product stories and technical documents, you c
 - [Access Control](https://docs.openzeppelin.com/contracts/4.x/api/access#AccessControl) by OpenZeppelin
 - [Hardhat](https://hardhat.org/)
 - [React Toastify](https://www.npmjs.com/package/react-toastify)
-**
