@@ -217,9 +217,9 @@ const { ethers } = require("hardhat");
 
 describe("RBAC", function () {
 
-		// fixture
+    // fixture
 
-		// unit tests
+    // unit tests
 
 })
 ```
@@ -227,15 +227,15 @@ describe("RBAC", function () {
 The first thing to do here is to write our fixture. The fixture will be called **`deployFixture`**, it will first create three dummy accounts for testing and then deploy the contract. All of these will be returned at the end.
 
 ```jsx
-		// fixture
-		async function deployFixture() {
-				const [owner, creator, extra] = await ethers.getSigners();
+    // fixture
+    async function deployFixture() {
+        const [owner, creator, extra] = await ethers.getSigners();
 
-				const RBAC = await ethers.getContractFactory("RBAC");
-				const rbac = await RBAC.deploy();
+        const RBAC = await ethers.getContractFactory("RBAC");
+        const rbac = await RBAC.deploy();
 
-				return { rbac, owner, creator, extra };
-		}
+        return { rbac, owner, creator, extra };
+    }
 ```
 
 In the first test, we should check whether, after deployment, the roles and variables are set correctly. The conditions to check for are as follows:
@@ -244,17 +244,17 @@ In the first test, we should check whether, after deployment, the roles and vari
 - **`count`** is set to 0.
 
 ```jsx
-		// unit tests
-		describe("Deployment", async function () {
-				it("Should set owner as DEFAULT_ADMIN_ROLE", async function () {
-						const { rbac, owner } = await loadFixture(deployFixture);
-						const DEFAULT_ADMIN_ROLE = await rbac.DEFAULT_ADMIN_ROLE();
-						expect(
-							await rbac.hasRole(DEFAULT_ADMIN_ROLE, owner.address)
-						).to.true;
-						expect(await rbac.count()).to.be.equal(0);
-				});
-		});
+    // unit tests
+    describe("Deployment", async function () {
+        it("Should set owner as DEFAULT_ADMIN_ROLE", async function () {
+            const { rbac, owner } = await loadFixture(deployFixture);
+            const DEFAULT_ADMIN_ROLE = await rbac.DEFAULT_ADMIN_ROLE();
+            expect(
+                await rbac.hasRole(DEFAULT_ADMIN_ROLE, owner.address)
+            ).to.true;
+            expect(await rbac.count()).to.be.equal(0);
+        });
+    });
 ```
 
 Next, we will test all the functions related to granting, revoking, and renouncing roles and entry creation. To check whether **`grantCreatorRole`** is working correctly, we want to test it for the following conditions:
@@ -263,29 +263,29 @@ Next, we will test all the functions related to granting, revoking, and renounci
 - It assigns the **`CREATOR`** role.
 
 ```jsx
-		describe("Access Control", async function () {
+    describe("Access Control", async function () {
 
-				it("Should set correct role", async function () {
-						const { rbac, owner, creator } = await loadFixture(deployFixture);
-						const CREATOR = await rbac.CREATOR();
-						expect(
-							await rbac.grantCreatorRole(creator.address)
-						).to.emit(
-							rbac,
-							"RoleGranted"
-						).withArgs(
-							CREATOR,
-							creator.address,
-							owner.address
-						)
-						expect(
-							await rbac.hasRole(CREATOR, creator.address)
-						).to.be.true;
-				})
+        it("Should set correct role", async function () {
+            const { rbac, owner, creator } = await loadFixture(deployFixture);
+            const CREATOR = await rbac.CREATOR();
+            expect(
+                await rbac.grantCreatorRole(creator.address)
+            ).to.emit(
+                rbac,
+                "RoleGranted"
+            ).withArgs(
+                CREATOR,
+                creator.address,
+                owner.address
+            )
+            expect(
+                await rbac.hasRole(CREATOR, creator.address)
+            ).to.be.true;
+        })
 
-				// rest of the tests should go below this line
+        // rest of the tests should go below this line
 
-		})
+    })
 ```
 
 We will test the **`revokeCreatorRole`** function for the following conditions:
@@ -294,99 +294,99 @@ We will test the **`revokeCreatorRole`** function for the following conditions:
 - It removes the **`CREATOR`** role.
 
 ```jsx
-		it("Should revoke the role", async function () {
-				const { rbac, owner, creator } = await loadFixture(deployFixture);
-				await rbac.grantCreatorRole(creator.address);
-				const CREATOR = await rbac.CREATOR();
-	
-				expect(
-					await rbac.revokeCreatorRole(creator.address)
-				).to.emit(
-					rbac,
-					"RoleRevoked"
-				).withArgs(
-					CREATOR,
-					creator.address,
-					owner.address
-				)
-				expect(
-					await rbac.hasRole(CREATOR, creator.address)
-				).to.be.false;
-		})
+    it("Should revoke the role", async function () {
+        const { rbac, owner, creator } = await loadFixture(deployFixture);
+        await rbac.grantCreatorRole(creator.address);
+        const CREATOR = await rbac.CREATOR();
+
+        expect(
+            await rbac.revokeCreatorRole(creator.address)
+        ).to.emit(
+            rbac,
+            "RoleRevoked"
+        ).withArgs(
+            CREATOR,
+            creator.address,
+            owner.address
+        )
+        expect(
+            await rbac.hasRole(CREATOR, creator.address)
+        ).to.be.false;
+    })
 ```
 
 We should also check whether the **`grantCreatorRole`** and **`revokeCreatorRole`** functions revert with the correct reason if someone other than the role admin calls them. To check the reason, we need to use a regular expression.
 
 ```jsx
-		it("Should revert if non-role admin calls to grant or revoke role", async function () {
-					const { rbac, owner, creator } = await loadFixture(deployFixture);
-					await expect(
-						rbac.connect(creator).grantCreatorRole(owner.address)
-					).to.be.revertedWith(
-						new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
-					)
-					await expect(
-						rbac.connect(creator).revokeCreatorRole(owner.address)
-					).to.be.revertedWith(
-						new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
-					)
-		})
+    it("Should revert if non-role admin calls to grant or revoke role", async function () {
+        const { rbac, owner, creator } = await loadFixture(deployFixture);
+        await expect(
+            rbac.connect(creator).grantCreatorRole(owner.address)
+        ).to.be.revertedWith(
+            new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
+        )
+        await expect(
+            rbac.connect(creator).revokeCreatorRole(owner.address)
+        ).to.be.revertedWith(
+            new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
+        )
+    })
 ```
 
 We will test the **`renounceCreatorRole`** function for the same conditions as **`revokeCreatorRole`**.
 
 ```jsx
-		it("Should creator should be able to renounce role", async function () {
-					const { rbac, owner, creator } = await loadFixture(deployFixture);
-					await rbac.grantCreatorRole(creator.address);
-					const CREATOR = await rbac.CREATOR();
-		
-					expect(
-						await rbac.connect(creator).renounceCreatorRole()
-					).to.emit(
-						rbac,
-						"RoleRevoked"
-					).withArgs(
-						CREATOR,
-						creator.address,
-						owner.address
-					)
-					expect(
-						await rbac.hasRole(CREATOR, creator.address)
-					).to.be.false;
-		})
+    it("Should creator should be able to renounce role", async function () {
+        const { rbac, owner, creator } = await loadFixture(deployFixture);
+        await rbac.grantCreatorRole(creator.address);
+        const CREATOR = await rbac.CREATOR();
+
+        expect(
+            await rbac.connect(creator).renounceCreatorRole()
+        ).to.emit(
+            rbac,
+            "RoleRevoked"
+        ).withArgs(
+            CREATOR,
+            creator.address,
+            owner.address
+        )
+        expect(
+            await rbac.hasRole(CREATOR, creator.address)
+        ).to.be.false;
+    })
 ```
 
 We assume that only addresses with the **`CREATOR`** role can create an entry, so we will test that assumption and check whether the counter increments after creating an entry.
 
 ```jsx
-		it("Should allow creator role to create entry", async function () {
-					const { rbac, creator } = await loadFixture(deployFixture);
-					await rbac.grantCreatorRole(creator.address);
-					expect(await rbac.count()).to.be.equal(0);
-		
-					const data = ethers.utils.formatBytes32String("FIRST ENTRY");
-					await rbac.connect(creator).createEntry(data);
-		
-					expect(await rbac.entries(0)).to.be.equal(data);
-					expect(await rbac.count()).to.be.equal(1);
-		})
+    it("Should allow creator role to create entry", async function () {
+        const { rbac, creator } = await loadFixture(deployFixture);
+        await rbac.grantCreatorRole(creator.address);
+        expect(await rbac.count()).to.be.equal(0);
+
+        const data = ethers.utils.formatBytes32String("FIRST ENTRY");
+        await rbac.connect(creator).createEntry(data);
+
+        expect(await rbac.entries(0)).to.be.equal(data);
+        expect(await rbac.count()).to.be.equal(1);
+    })
 ```
 
 Finally, we will check whether **`createEntry`** throws an error if called by an address without the **`CREATOR`** role.
 
 ```jsx
-		it("Should revert for caller without correct role", async function () {
-					const { rbac, creator, extra } = await loadFixture(deployFixture);
-					await rbac.grantCreatorRole(creator.address);
-		
-					const data = ethers.utils.formatBytes32String("FIRST ENTRY");
-					await expect(
-						rbac.connect(extra).createEntry(data)
-					).to.be.revertedWith(
-						new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
-					)
-		})
+    it("Should revert for caller without correct role", async function () {
+        const { rbac, creator, extra } = await loadFixture(deployFixture);
+        await rbac.grantCreatorRole(creator.address);
+
+        const data = ethers.utils.formatBytes32String("FIRST ENTRY");
+        await expect(
+            rbac.connect(extra).createEntry(data)
+        ).to.be.revertedWith(
+            new RegExp("AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})")
+        )
+    })
 ```
 
 To run the test, execute the following command in the terminal:
